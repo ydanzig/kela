@@ -1,1 +1,4 @@
-playwright==1.49.0
+#playwright==1.49.0 old version that is not compatible with python 3.14
+playwright==1.58.0
+pytest
+allure-pytest
