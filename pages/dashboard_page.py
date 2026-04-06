@@ -42,6 +42,9 @@ class DashboardPage(BasePage):
     URGENT_ADD_BTN = '[data-testid="urgent-event-add-btn"]'
     URGENT_ITEMS = '[data-testid="urgent-event-item"]'
     DELETE_URGENT_BTNS = '[data-testid="delete-urgent-event-btn"]'
+    URGENT_EVENT_TYPE = '[data-testid="urgent-event-type"]'
+    URGENT_EVENT_TIME = '[data-testid="urgent-event-time"]'
+    URGENT_EVENT_DESCRIPTION = '[data-testid="urgent-event-description"]'
 
     # Events History
     VIEW_EVENTS_BTN = '[data-testid="view-events-btn"]'
@@ -106,13 +109,52 @@ class DashboardPage(BasePage):
         Return the description of the first displayed task.
         """
         return self.page.locator(self.TASK_DESCRIPTIONS).first.inner_text()
+    
     # ======================
     # Business Actions - Urgent Events
     # ======================
 
+    def open_add_urgent_event(self):
+        """
+        Open the Add Urgent Event modal.
+        """
+        self.click(self.ADD_URGENT_BTN)
+
+    def select_urgent_event_type(self, event_type: str):
+        """
+        Select urgent event type from dropdown.
+        """
+        self.page.locator(self.URGENT_TYPE_SELECT).select_option(event_type)
+
+    def fill_urgent_event_time(self, time: str):
+        """
+        Fill urgent event time field.
+        """
+        self.fill(self.URGENT_TIME_INPUT, time)
+
+    def fill_urgent_event_description(self, description: str):
+        """
+        Fill urgent event description field.
+        """
+        self.fill(self.URGENT_DESCRIPTION_INPUT, description)
+
+    def set_urgent_toggle(self, value: bool):
+        """
+        Set urgent checkbox to the requested state.
+        """
+        checkbox = self.page.locator(self.URGENT_TOGGLE)
+        if checkbox.is_checked() != value:
+            checkbox.click()
+
+    def click_add_urgent_event(self):
+        """
+        Click Add button in urgent event modal.
+        """
+        self.click(self.URGENT_ADD_BTN)
+
     def add_urgent_event(
         self,
-        event_type: str,
+        event_type: str = "",
         time: str = "",
         description: str = "",
         urgent: bool = False,
@@ -120,24 +162,21 @@ class DashboardPage(BasePage):
         """
         Add a new urgent event.
 
-        :param event_type: Type of event (must match dropdown option)
-        :param time: Optional time
-        :param description: Optional description
-        :param urgent: Whether to toggle urgency flag
+        Allows flexible usage for both positive and negative scenarios.
         """
-        self.click(self.ADD_URGENT_BTN)
-        self.page.locator(self.URGENT_TYPE_SELECT).select_option(event_type)
+        self.open_add_urgent_event()
+
+        if event_type:
+            self.select_urgent_event_type(event_type)
 
         if time:
-            self.fill(self.URGENT_TIME_INPUT, time)
+            self.fill_urgent_event_time(time)
 
         if description:
-            self.fill(self.URGENT_DESCRIPTION_INPUT, description)
+            self.fill_urgent_event_description(description)
 
-        if urgent:
-            self.click(self.URGENT_TOGGLE)
-
-        self.click(self.URGENT_ADD_BTN)
+        self.set_urgent_toggle(urgent)
+        self.click_add_urgent_event()
 
     def delete_first_urgent_event(self):
         """
@@ -151,9 +190,63 @@ class DashboardPage(BasePage):
         """
         return self.page.locator(self.URGENT_ITEMS).count()
 
+    def first_urgent_event_text(self) -> str:
+        """
+        Return full text of the first urgent event card.
+        """
+        return self.page.locator(self.URGENT_ITEMS).first.inner_text()
+    
+    def is_urgent_type_select_invalid(self) -> bool:
+        """
+        Check if the urgent event type select element is in an invalid state (e.g. after trying to submit without selecting a type).
+        """
+        return self.page.locator(self.URGENT_TYPE_SELECT).evaluate(
+            "el => !el.checkValidity()"
+    )
+
+    def urgent_type_validation_message(self) -> str:
+        """
+        Get the validation message of the urgent event type select element.
+        """
+        return self.page.locator(self.URGENT_TYPE_SELECT).evaluate(
+            "el => el.validationMessage"
+        )
+
+    def first_urgent_event_type(self) -> str:
+        """
+        Return the type of the first displayed urgent event.
+        """
+        return self.page.locator(self.URGENT_EVENT_TYPE).first.inner_text()
+
+    def first_urgent_event_time(self) -> str:
+        """
+        Return the time of the first displayed urgent event.
+        """
+        return self.page.locator(self.URGENT_EVENT_TIME).first.inner_text()
+
+    def first_urgent_event_description(self) -> str:
+        """
+        Return the description of the first displayed urgent event.
+        """
+        return self.page.locator(self.URGENT_EVENT_DESCRIPTION).first.inner_text()
+    
+    def first_urgent_event_is_marked_red(self) -> bool:
+        """
+        Check if first urgent event has red styling.
+        """
+        classes = self.page.locator(self.URGENT_ITEMS).first.get_attribute("class")
+        return "urgent-event-red" in classes
     # ======================
     # Business Actions - Events History
     # ======================
+
+    def ensure_events_history_open(self):
+        """
+        Ensure that the events history section is open.
+        If it is already visible, do nothing. Otherwise, open it.
+        """
+        if not self.is_visible(self.EVENTS_SECTION):
+            self.click(self.VIEW_EVENTS_BTN)
 
     def open_events_history(self):
         """
@@ -166,6 +259,18 @@ class DashboardPage(BasePage):
         Get number of events in history.
         """
         return self.page.locator(self.EVENT_ROWS).count()
+    
+    def first_event_row_text(self) -> str:
+        """
+        Return full text of the first event row.
+        """
+        return self.page.locator(self.EVENT_ROWS).first.inner_text()
+    
+    def all_event_rows_text(self) -> list[str]:
+        """
+        Return text of all event rows.
+        """
+        return self.page.locator(self.EVENT_ROWS).all_inner_texts()
 
     # ======================
     # User Actions

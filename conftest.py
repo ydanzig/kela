@@ -2,7 +2,7 @@ import os
 import pytest
 import allure
 from playwright.sync_api import sync_playwright
-from utils.config import BASE_URL
+from utils.config import BASE_URL, SCREENSHOT_DIR
 
 
 def pytest_addoption(parser):
@@ -46,7 +46,7 @@ def pytest_runtest_makereport(item, call):
     if page is None:
         return
 
-    screenshots_dir = "artifacts/screenshots"
+    screenshots_dir = SCREENSHOT_DIR
     os.makedirs(screenshots_dir, exist_ok=True)
 
     test_name = item.name.replace("/", "_").replace("\\", "_").replace(":", "_")

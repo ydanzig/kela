@@ -2,12 +2,17 @@
 Task-related tests.
 
 Test Coverage:
+- Total test functions: 6
+- Total executed test cases: 11
 
-| Test Name                                  | Description                                                  |
-|-------------------------------------------|--------------------------------------------------------------|
-| test_add_task_success                      | Verify adding a task with all fields populated              |
-| test_add_task_with_default_optional_values | Verify adding a task with only required fields              |
-| test_delete_task                           | Verify deleting an existing task                            |
+| Test Name                                  | Test Type                     | Description                                                  |
+|--------------------------------------------|-------------------------------|--------------------------------------------------------------|
+| test_add_task_success                      | Positive, Parametrized        | Verify adding a task with all fields populated               |
+| test_add_task_with_default_optional_values | Positive, Parametrized        | Verify adding a task with only required fields               |
+| test_add_duplicate_task_allowed            | Edge, State                   | Verify that duplicate tasks can be added and both exist      |
+| test_delete_task                           | State                         | Verify deleting an existing task                             |
+| test_add_many_tasks                        | Stress                        | Verify that the system can handle adding multiple tasks      |
+| test_add_task_with_invalid_name            | Negative, Parametrized        | Verify that a task cannot be created with an invalid name    |
 """
 
 import pytest
@@ -16,9 +21,8 @@ from pages.login_page import LoginPage
 from pages.dashboard_page import DashboardPage
 from utils.config import NUM_TASKS
 
-
 ############################################################################################
-######################################## Positive Tests ####################################
+######################################## Positive/edge Tests ###############################
 ############################################################################################
 
 @pytest.mark.tasks
@@ -95,8 +99,63 @@ def test_add_task_with_default_optional_values(page, username, password, task_na
     assert dashboard_page.first_task_description() == TaskExpected.DEFAULT_DESCRIPTION, \
         f"Unexpected default task description value expected {TaskExpected.DEFAULT_DESCRIPTION} but got {dashboard_page.first_task_description()}."
 
+@pytest.mark.tasks
+@pytest.mark.edge
+@pytest.mark.state
+def test_add_duplicate_task_allowed(page):
+    """
+    Verify that adding the same task twice results in two separate tasks.
+    """
+    login_page = LoginPage(page)
+    dashboard_page = DashboardPage(page)
+
+    login_page.login("yoni", "1234")
+
+    task_name = "Duplicate Task"
+    task_time = "12:00"
+    task_description = "Same task twice"
+
+    # Add the same task twice
+    dashboard_page.add_task(task_name, task_time, task_description)
+    dashboard_page.add_task(task_name, task_time, task_description)
+
+    # Verify both tasks exist
+    assert dashboard_page.task_count() == 2, \
+        f"Expected 2 tasks after adding duplicate task, but found {dashboard_page.task_count()}."
+    
 ############################################################################################
-######################################## Negative / State Tests ############################
+######################################## Negative Tests ####################################
+############################################################################################
+
+@pytest.mark.tasks
+@pytest.mark.negative
+@pytest.mark.parametrize(
+    "task_name",
+    ["", "   "],
+    ids=[
+        "empty_task_name",
+        "task_name_only_spaces",
+    ],
+)
+def test_add_task_with_invalid_name(page, task_name):
+    """
+    Verify that a task cannot be created with an empty or invalid name.
+    """
+    login_page = LoginPage(page)
+    dashboard_page = DashboardPage(page)
+
+    login_page.login("yoni", "1234")
+
+    initial_count = dashboard_page.task_count()
+
+    dashboard_page.add_task(task_name)
+
+    assert dashboard_page.task_count() == initial_count, \
+        "Task should not be created with invalid name."
+
+
+############################################################################################
+######################################## State Tests #######################################
 ############################################################################################
 
 @pytest.mark.tasks
@@ -127,6 +186,8 @@ def test_delete_task(page, username, password, task_name):
 
     assert dashboard_page.task_count() == 0, \
         "Expected no tasks to remain after deleting the only task."
+    
+
     
 ############################################################################################
 ######################################## Stress Tests ######################################

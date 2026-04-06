@@ -2,11 +2,14 @@
 Login page tests.
 
 Test Coverage:
+- Total test functions: 3
+- Total executed test cases: 10
 
-| Test Name                     | Description                                                |
-|------------------------------|-------------------------------------------------------------|
-| test_login_success           | Verify successful login with valid credentials              |
-| test_login_validation_errors | Verify validation errors for invalid login attempts         |
+| Test Name                    | Test Type               | Description                                                               |
+|------------------------------|-------------------------|---------------------------------------------------------------------------|
+| test_login_success           | Positive, Sanity, Parametrized | Verify successful login with multiple valid credential combinations|      |
+| test_login_validation_errors | Negative, Parametrized  | Verify validation errors for multiple invalid login attempts              |
+| test_logout_success          | State, Sanity           | Verify that a logged-in user can log out successfully                     |
 """
 
 import pytest
@@ -20,6 +23,7 @@ from tests.expected import LoginExpected
 ######################################## Positive Tests ####################################
 ############################################################################################
 
+@pytest.mark.sanity
 @pytest.mark.login
 @pytest.mark.positive
 @pytest.mark.parametrize(
@@ -60,11 +64,11 @@ def test_login_success(page, username, password):
     "username, password, expected_error",
     [
         ("", "", LoginExpected.ERROR_EMPTY_CREDENTIALS),
-        ("yoni", "123", LoginExpected.ERROR_SHORT_PASSWORD),
+        ("Moshe", "123", LoginExpected.ERROR_SHORT_PASSWORD),
         ("", "1234", LoginExpected.ERROR_EMPTY_CREDENTIALS),
-        ("yoni", "", LoginExpected.ERROR_EMPTY_CREDENTIALS),
+        ("Yoni", "", LoginExpected.ERROR_EMPTY_CREDENTIALS),
         ("   ", "1234", LoginExpected.ERROR_EMPTY_CREDENTIALS),
-        ("yoni", "   ", LoginExpected.ERROR_EMPTY_CREDENTIALS),
+        ("David", "   ", LoginExpected.ERROR_EMPTY_CREDENTIALS),
     ],
     ids=[
         "empty_username_and_password",
@@ -88,3 +92,30 @@ def test_login_validation_errors(page, username, password, expected_error):
 
     assert login_page.get_error_message() == expected_error, \
         f"Unexpected error message. Expected: '{expected_error}'. but got: '{login_page.get_error_message()}'."
+    
+############################################################################################
+######################################## State Tests #######################################
+############################################################################################
+
+@pytest.mark.sanity
+@pytest.mark.login
+@pytest.mark.state
+def test_logout_success(page):
+    """
+    Verify that a logged-in user can log out successfully and is redirected to login page.
+    """
+    login_page = LoginPage(page)
+    dashboard_page = DashboardPage(page)
+
+    # Perform login
+    login_page.login("yoni", "1234")
+
+    assert dashboard_page.is_loaded(), \
+        "Dashboard page was not loaded after login."
+
+    # Perform logout
+    dashboard_page.logout()
+
+    # Verify login page is shown again
+    assert login_page.is_loaded(), \
+        "Login page was not displayed after logout."

@@ -1,38 +1,175 @@
-# Automation Project - Homework Assignment
+# 🧪 Task Board Automation Project
 
-## What You Need to Install
+UI automation framework built with **Python, Pytest, and Playwright**.  
+Covers core flows: **login, tasks, urgent events, and event history**.
 
-### 1. Node.js (for the app)
-- Version 18 or higher
-- [Download](https://nodejs.org)
+---
 
-### 2. Python (for running sample tests)
-- Version 3.8 or higher
-- Usually pre-installed on macOS/Linux. Check: `python3 --version`
+## 📐 Framework Design
 
-### 3. Run the App
+The framework is implemented using the **Page Object Model (POM)** pattern.
 
-```bash
+### 📁 Project Structure
+
+```
+project-root/
+│
+├── pages/
+│   ├── login_page.py
+│   └── dashboard_page.py
+│
+├── tests/
+│   ├── test_login.py
+│   ├── test_tasks.py
+│   ├── test_urgent_events.py
+│   ├── test_event_history.py
+│   └── expected.py
+│
+├── utils/
+│   └── config.py
+│
+├── requirements.txt
+└── README.md
+```
+
+### 🧠 Design Explanation
+
+- **pages/**  
+  Contains UI interaction logic only (clicks, inputs, reads)
+
+- **tests/**  
+  Contains business scenarios and assertions  
+  Each file represents a feature
+
+- **utils/**  
+  Shared configuration (e.g. constants, test data)
+
+- **expected.py**  
+  Centralized expected values for validation
+
+### Why this approach?
+
+- Separation of concerns  
+- High readability (tests describe behavior)  
+- Reusability of actions  
+- Easy maintenance when UI changes  
+
+---
+
+## ⚙️ Installation
+
+### Run the application
+
+```
 npm install
 npm run dev
 ```
 
-The app will open at http://localhost:5173
+Application URL:  
+http://localhost:5173  
 
-### 4. Run the Sample Test (optional)
+⚠️ Make sure the application is running before executing tests.
 
-Create a virtual environment and install dependencies:
+---
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate    # On Windows: .venv\Scripts\activate
+### Setup test environment
+
+```
+python -m venv .venv
+```
+
+Activate:
+
+**Windows**
+```
+.venv\Scripts\activate
+```
+
+**Mac/Linux**
+```
+source .venv/bin/activate
+```
+
+Install dependencies:
+
+```
 pip install -r requirements.txt
 playwright install chromium
 ```
 
-Run the test (make sure the app is running first):
+---
 
-```bash
-source .venv/bin/activate
-python tests/test_login.py
+## ▶️ Running Tests
+
+Run all tests:
+
 ```
+pytest
+```
+
+Run a specific test:
+
+```
+pytest .\tests\test_tasks.py::test_add_task_with_invalid_name
+```
+
+Verbose mode (more detailed output):
+
+```
+pytest -v
+```
+
+Headed mode (opens browser):
+
+```
+pytest --headed
+```
+
+Example:
+
+```
+pytest .\tests\test_tasks.py::test_add_task_with_invalid_name -v --headed
+```
+
+Stop on first failure:
+
+```
+pytest -x
+```
+
+---
+
+## 📊 Reports (Allure)
+
+Generate results:
+
+```
+pytest --alluredir=allure-results
+```
+
+Open report:
+
+```
+allure serve allure-results
+```
+
+💡 This will open a visual dashboard with:
+- test results (pass/fail)
+- execution steps
+- error details
+- timeline
+
+---
+
+## ✅ Coverage
+
+- **Login** – success, validation, logout  
+- **Tasks** – create, delete, duplicates, stress, negative  
+- **Urgent Events** – create, validation, delete  
+- **Event History** – logging, order, persistence  
+
+---
+
+## 🐞 Bugs
+
+See `BUGS.md`

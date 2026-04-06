@@ -12,3 +12,11 @@ class LoginExpected:
 class TaskExpected:
     DEFAULT_TIME = "Not specified"
     DEFAULT_DESCRIPTION = "No description"
+
+class UrgentEventExpected:
+    TYPE_REQUIRED = "Event type is required" #Not in use yet. cannot identify the element for this error message, but added for future use when the element will be added to the page.
+    PLEASE_SELECT_ITEM = "Please select an item in the list."
+    ATTACK_EVENT_TEXT = "Attack event"
+    ASSAULT_EVENT_TEXT = "Assault event"
+    BREACH_EVENT_TEXT = "Breach event"
+    RED_EVENT_TEXT = "Red event"
