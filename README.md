@@ -15,21 +15,32 @@ The framework is implemented using the **Page Object Model (POM)** pattern.
 project-root/
 │
 ├── pages/
+│   ├── __init__.py
+│   ├── base_page.py
 │   ├── login_page.py
-│   └── dashboard_page.py
+│   ├── dashboard_page.py
+│   └── maps/
+│       ├── __init__.py
+│       ├── login_map.py
+│       └── dashboard_map.py
 │
 ├── tests/
+│   ├── __init__.py
+│   ├── expected.py
 │   ├── test_login.py
 │   ├── test_tasks.py
 │   ├── test_urgent_events.py
-│   ├── test_event_history.py
-│   └── expected.py
+│   └── test_event_history.py
 │
 ├── utils/
+|   ├── __init__.py
 │   └── config.py
 │
+├── conftest.py
+├── pytest.ini
 ├── requirements.txt
-└── README.md
+├── README.md
+└── BUGS.md
 ```
 
 ### 🧠 Design Explanation

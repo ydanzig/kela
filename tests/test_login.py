@@ -51,8 +51,8 @@ def test_login_success(page, username, password):
     assert dashboard_page.is_loaded(), \
         "Dashboard page was not loaded after successful login."
 
-    assert username in page.locator(dashboard_page.USER).inner_text(), \
-        f"Logged-in username is not displayed as expected. Expected to display '{username}' in the user element, but got '{page.locator(dashboard_page.USER).inner_text()}'."
+    assert username in dashboard_page.get_logged_in_user(), \
+        f"Logged-in username is not displayed as expected. Expected to display '{username}' in the user element, but got '{dashboard_page.get_logged_in_user()}'."
 
 ############################################################################################
 ######################################## Negative Tests ####################################

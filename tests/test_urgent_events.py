@@ -16,12 +16,8 @@ Test Coverage:
 """
 
 import pytest
-from pages.login_page import LoginPage
-from pages.dashboard_page import DashboardPage
 from tests.expected import UrgentEventExpected
 
-def login_as_valid_user(page):
-    LoginPage(page).login("yoni", "1234")
 
 ############################################################################################
 ######################################## Positive Tests ####################################
@@ -30,12 +26,11 @@ def login_as_valid_user(page):
 @pytest.mark.urgent
 @pytest.mark.sanity
 @pytest.mark.positive
-def test_add_attack_urgent_event_success(page):
+def test_add_attack_urgent_event_success(logged_in_dashboard):
     """
     Verify that an attack urgent event can be added successfully.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     dashboard.add_urgent_event("attack", "20:00", "Critical issue", urgent=True)
 
@@ -67,13 +62,12 @@ def test_add_attack_urgent_event_success(page):
     [True, False],
     ids=["marked_urgent", "not_marked_urgent"],
 )
-def test_add_urgent_event_displays_values_for_each_type(page, event_type, expected_text, urgent_bool):
+def test_add_urgent_event_displays_values_for_each_type(logged_in_dashboard, event_type, expected_text, urgent_bool):
     """
     Verify that entered values are correctly displayed for each urgent event type.
     We also check that the card color is red when marked urgent, and not red when not marked urgent.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     event_time = "20:00"
     description = f"{expected_text} description"
@@ -111,12 +105,11 @@ def test_add_urgent_event_displays_values_for_each_type(page, event_type, expect
     [True, False],
     ids=["without_type_marked_urgent", "without_type_not_marked_urgent"],
 )
-def test_add_urgent_event_without_type(page, urgent_bool):
+def test_add_urgent_event_without_type(logged_in_dashboard, urgent_bool):
     """
     Verify that urgent event cannot be created without selecting event type.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     dashboard.add_urgent_event(
         event_type="",
@@ -144,12 +137,11 @@ def test_add_urgent_event_without_type(page, urgent_bool):
 @pytest.mark.sanity
 @pytest.mark.urgent
 @pytest.mark.state
-def test_delete_urgent_event(page):
+def test_delete_urgent_event(logged_in_dashboard):
     """
     Verify that an existing urgent event can be deleted successfully.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     dashboard.add_urgent_event("breach")
 
@@ -163,12 +155,11 @@ def test_delete_urgent_event(page):
 
 @pytest.mark.urgent
 @pytest.mark.state
-def test_delete_one_of_multiple_urgent_events(page):
+def test_delete_one_of_multiple_urgent_events(logged_in_dashboard):
     """
     Verify deleting one urgent event when multiple events exist.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     dashboard.add_urgent_event("attack")
     dashboard.add_urgent_event("breach")
@@ -183,12 +174,11 @@ def test_delete_one_of_multiple_urgent_events(page):
     
 @pytest.mark.urgent
 @pytest.mark.state
-def test_delete_all_urgent_events_one_by_one(page):
+def test_delete_all_urgent_events_one_by_one(logged_in_dashboard):
     """
     Verify that all urgent events can be deleted one by one until none remain.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     event_types = ["attack", "assault", "breach", "red"]
 

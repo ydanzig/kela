@@ -18,15 +18,7 @@ Test Coverage:
 | test_mixed_events_are_logged_in_history             | State                  | Verify that both task events and urgent events are logged in history        |
 | test_task_deletion_does_not_remove_event_from_history | State                | Verify that deleting a task does not remove its creation event from history |
 """
-
 import pytest
-from pages.login_page import LoginPage
-from pages.dashboard_page import DashboardPage
-
-
-def login_as_valid_user(page):
-    LoginPage(page).login("yoni", "1234")
-
 
 ############################################################################################
 ######################################## Positive Tests ####################################
@@ -35,31 +27,29 @@ def login_as_valid_user(page):
 @pytest.mark.history
 @pytest.mark.sanity
 @pytest.mark.positive
-def test_open_events_history_success(page):
+def test_open_events_history_success(logged_in_dashboard):
     """
     Verify that the events history section can be opened successfully.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     dashboard.open_events_history()
 
-    assert dashboard.is_visible(dashboard.EVENTS_SECTION), \
+    assert dashboard.is_events_history_visible(), \
         "Expected events history section to be visible after opening."
 
 
 @pytest.mark.history
 @pytest.mark.positive
-def test_events_history_empty_state(page):
+def test_events_history_empty_state(logged_in_dashboard):
     """
     Verify that empty state is displayed when no events exist.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     dashboard.ensure_events_history_open()
 
-    assert dashboard.is_visible(dashboard.NO_EVENTS_MESSAGE), \
+    assert dashboard.is_no_events_message_visible(), \
         "Expected no-events message when history is empty."
 
     assert dashboard.event_count() == 0, \
@@ -68,12 +58,11 @@ def test_events_history_empty_state(page):
 
 @pytest.mark.history
 @pytest.mark.positive
-def test_task_creation_adds_event_to_history(page):
+def test_task_creation_adds_event_to_history(logged_in_dashboard):
     """
     Verify that creating a task adds an entry to events history.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     task_name = "history_test_task"
 
@@ -94,12 +83,11 @@ def test_task_creation_adds_event_to_history(page):
     [True, False],
     ids=["marked_urgent", "not_marked_urgent"],
 )
-def test_urgent_event_creation_adds_event_to_history(page, urgent_bool):
+def test_urgent_event_creation_adds_event_to_history(logged_in_dashboard, urgent_bool):
     """
     Verify that creating an urgent event adds an entry to events history.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     dashboard.add_urgent_event("attack", "20:00", "critical", urgent=urgent_bool)
     dashboard.ensure_events_history_open()
@@ -119,12 +107,11 @@ def test_urgent_event_creation_adds_event_to_history(page, urgent_bool):
 
 @pytest.mark.history
 @pytest.mark.state
-def test_events_history_order_latest_first(page):
+def test_events_history_order_latest_first(logged_in_dashboard):
     """
     Verify that the latest event appears first in history.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     dashboard.add_task("first_history_task")
     dashboard.add_task("second_history_task")
@@ -140,13 +127,12 @@ def test_events_history_order_latest_first(page):
 @pytest.mark.history
 @pytest.mark.state
 @pytest.mark.skip(reason="BUG: urgent events are not appearing in events history list")
-def test_urgent_event_order_latest_first(page):
+def test_urgent_event_order_latest_first(logged_in_dashboard):
     """
     Verify that the latest urgent event appears first in history.
     (Currently skipped due to known bug)
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     dashboard.add_urgent_event("attack", description="first urgent", urgent=True)
     dashboard.add_urgent_event("breach", description="second urgent", urgent=True)
@@ -162,12 +148,11 @@ def test_urgent_event_order_latest_first(page):
 
 @pytest.mark.history
 @pytest.mark.state
-def test_multiple_task_creations_add_multiple_events_to_history(page):
+def test_multiple_task_creations_add_multiple_events_to_history(logged_in_dashboard):
     """
     Verify that creating multiple tasks adds multiple entries to events history.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     first_task_name = "history_task_one"
     second_task_name = "history_task_two"
@@ -190,12 +175,11 @@ def test_multiple_task_creations_add_multiple_events_to_history(page):
     
 @pytest.mark.history
 @pytest.mark.state
-def test_mixed_events_are_logged_in_history(page):
+def test_mixed_events_are_logged_in_history(logged_in_dashboard):
     """
     Verify that both task events and urgent events are logged in events history.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     task_name = "mixed_history_task"
     urgent_description = "mixed urgent event"
@@ -220,12 +204,11 @@ def test_mixed_events_are_logged_in_history(page):
 
 @pytest.mark.history
 @pytest.mark.state
-def test_task_deletion_does_not_remove_event_from_history(page):
+def test_task_deletion_does_not_remove_event_from_history(logged_in_dashboard):
     """
     Verify that deleting a task does not remove its creation event from history.
     """
-    login_as_valid_user(page)
-    dashboard = DashboardPage(page)
+    dashboard = logged_in_dashboard
 
     task_name = "task_for_history_test"
 

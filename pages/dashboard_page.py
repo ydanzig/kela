@@ -1,3 +1,4 @@
+from pages.maps.dashboard_map import DashboardMap
 from pages.base_page import BasePage
 
 
@@ -13,44 +14,9 @@ class DashboardPage(BasePage):
     Provides high-level business actions used in test scenarios.
     """
 
-    # ======================
-    # Locators
-    # ======================
-    TITLE = '[data-testid="dashboard-title"]'
-    USER = '[data-testid="user-display"]'
-    LOGOUT = '[data-testid="logout-btn"]'
-
-    # Tasks
-    ADD_TASK_BTN = '[data-testid="add-task-btn"]'
-    TASK_NAME_INPUT = '[data-testid="task-name-input"]'
-    TASK_TIME_INPUT = '[data-testid="task-time-input"]'
-    TASK_DESCRIPTION_INPUT = '[data-testid="task-description-input"]'
-    TASK_ADD_BTN = '[data-testid="task-add-btn"]'
-    TASK_ITEMS = '[data-testid="task-item"]'
-    TASK_NAMES = '[data-testid="task-name"]'
-    DELETE_TASK_BTNS = '[data-testid="delete-task-btn"]'
-    NO_TASKS_MESSAGE = '[data-testid="no-tasks-message"]'
-    TASK_TIMES = '[data-testid="task-time"]'
-    TASK_DESCRIPTIONS = '[data-testid="task-description"]'
-
-    # Urgent Events
-    ADD_URGENT_BTN = '[data-testid="add-urgent-event-btn"]'
-    URGENT_TYPE_SELECT = '[data-testid="urgent-event-type-select"]'
-    URGENT_TIME_INPUT = '[data-testid="urgent-event-time-input"]'
-    URGENT_DESCRIPTION_INPUT = '[data-testid="urgent-event-description-input"]'
-    URGENT_TOGGLE = '[data-testid="urgent-event-toggle"]'
-    URGENT_ADD_BTN = '[data-testid="urgent-event-add-btn"]'
-    URGENT_ITEMS = '[data-testid="urgent-event-item"]'
-    DELETE_URGENT_BTNS = '[data-testid="delete-urgent-event-btn"]'
-    URGENT_EVENT_TYPE = '[data-testid="urgent-event-type"]'
-    URGENT_EVENT_TIME = '[data-testid="urgent-event-time"]'
-    URGENT_EVENT_DESCRIPTION = '[data-testid="urgent-event-description"]'
-
-    # Events History
-    VIEW_EVENTS_BTN = '[data-testid="view-events-btn"]'
-    EVENTS_SECTION = '[data-testid="events-section"]'
-    EVENT_ROWS = '[data-testid="event-row"]'
-    NO_EVENTS_MESSAGE = '[data-testid="no-events-message"]'
+    def __init__(self, page):
+        super().__init__(page)
+        self.map = DashboardMap
 
     # ======================
     # Page State
@@ -60,10 +26,10 @@ class DashboardPage(BasePage):
         """
         Verify that the dashboard page is loaded.
         """
-        return self.is_visible(self.TITLE)
+        return self.is_visible(self.map.TITLE)
 
     # ======================
-    # Business Actions - Tasks
+    # Tasks - Actions
     # ======================
 
     def add_task(self, name: str, time: str = "", description: str = ""):
@@ -74,75 +40,79 @@ class DashboardPage(BasePage):
         :param time: Optional time
         :param description: Optional description
         """
-        self.click(self.ADD_TASK_BTN)
-        self.fill(self.TASK_NAME_INPUT, name)
-        self.fill(self.TASK_TIME_INPUT, time)
-        self.fill(self.TASK_DESCRIPTION_INPUT, description)
-        self.click(self.TASK_ADD_BTN)
+        self.click(self.map.ADD_TASK_BTN)
+        self.fill(self.map.TASK_NAME_INPUT, name)
+        self.fill(self.map.TASK_TIME_INPUT, time)
+        self.fill(self.map.TASK_DESCRIPTION_INPUT, description)
+        self.click(self.map.TASK_ADD_BTN)
 
     def delete_first_task(self):
         """
         Delete the first task displayed in the task list.
         """
-        self.page.locator(self.DELETE_TASK_BTNS).first.click()
+        self.locator(self.map.DELETE_TASK_BTNS).first.click()
+
+    # ==============================
+    # Tasks - Getters / Validations
+    # ==============================
 
     def task_count(self) -> int:
         """
         Get number of tasks.
         """
-        return self.page.locator(self.TASK_ITEMS).count()
+        return self.count(self.map.TASK_ITEMS)
 
     def first_task_name(self) -> str:
         """
         Return the name of the first displayed task.
         """
-        return self.page.locator(self.TASK_NAMES).first.inner_text()
+        return self.first_text(self.map.TASK_NAMES)
     
     def first_task_time(self) -> str:
         """
         Return the time of the first displayed task.
         """
-        return self.page.locator(self.TASK_TIMES).first.inner_text()
+        return self.first_text(self.map.TASK_TIMES)
 
     def first_task_description(self) -> str:
         """
         Return the description of the first displayed task.
         """
-        return self.page.locator(self.TASK_DESCRIPTIONS).first.inner_text()
+        return self.first_text(self.map.TASK_DESCRIPTIONS)
     
-    # ======================
-    # Business Actions - Urgent Events
-    # ======================
+    # ========================
+    # Urgent Events - Actions
+    # ========================
 
     def open_add_urgent_event(self):
         """
         Open the Add Urgent Event modal.
         """
-        self.click(self.ADD_URGENT_BTN)
+        self.click(self.map.ADD_URGENT_BTN)
 
     def select_urgent_event_type(self, event_type: str):
         """
         Select urgent event type from dropdown.
         """
-        self.page.locator(self.URGENT_TYPE_SELECT).select_option(event_type)
+        self.locator(self.map.URGENT_TYPE_SELECT).select_option(event_type)
 
     def fill_urgent_event_time(self, time: str):
         """
         Fill urgent event time field.
         """
-        self.fill(self.URGENT_TIME_INPUT, time)
+        self.fill(self.map.URGENT_TIME_INPUT, time)
 
     def fill_urgent_event_description(self, description: str):
         """
         Fill urgent event description field.
         """
-        self.fill(self.URGENT_DESCRIPTION_INPUT, description)
+        self.fill(self.map.URGENT_DESCRIPTION_INPUT, description)
 
     def set_urgent_toggle(self, value: bool):
         """
         Set urgent checkbox to the requested state.
         """
-        checkbox = self.page.locator(self.URGENT_TOGGLE)
+        checkbox = self.locator(self.map.URGENT_TOGGLE)
         if checkbox.is_checked() != value:
             checkbox.click()
 
@@ -150,7 +120,7 @@ class DashboardPage(BasePage):
         """
         Click Add button in urgent event modal.
         """
-        self.click(self.URGENT_ADD_BTN)
+        self.click(self.map.URGENT_ADD_BTN)
 
     def add_urgent_event(
         self,
@@ -182,25 +152,29 @@ class DashboardPage(BasePage):
         """
         Delete the first urgent event.
         """
-        self.page.locator(self.DELETE_URGENT_BTNS).first.click()
+        self.locator(self.map.DELETE_URGENT_BTNS).first.click()
+    
+    # =====================================
+    # Urgent Events - Getters / Validations
+    # =====================================
 
     def urgent_event_count(self) -> int:
         """
         Get number of urgent events.
         """
-        return self.page.locator(self.URGENT_ITEMS).count()
+        return self.count(self.map.URGENT_ITEMS)
 
     def first_urgent_event_text(self) -> str:
         """
         Return full text of the first urgent event card.
         """
-        return self.page.locator(self.URGENT_ITEMS).first.inner_text()
+        return self.first_text(self.map.URGENT_ITEMS)
     
     def is_urgent_type_select_invalid(self) -> bool:
         """
         Check if the urgent event type select element is in an invalid state (e.g. after trying to submit without selecting a type).
         """
-        return self.page.locator(self.URGENT_TYPE_SELECT).evaluate(
+        return self.locator(self.map.URGENT_TYPE_SELECT).evaluate(
             "el => !el.checkValidity()"
     )
 
@@ -208,69 +182,86 @@ class DashboardPage(BasePage):
         """
         Get the validation message of the urgent event type select element.
         """
-        return self.page.locator(self.URGENT_TYPE_SELECT).evaluate(
+        return self.locator(self.map.URGENT_TYPE_SELECT).evaluate(
             "el => el.validationMessage"
         )
-
+    
     def first_urgent_event_type(self) -> str:
         """
         Return the type of the first displayed urgent event.
         """
-        return self.page.locator(self.URGENT_EVENT_TYPE).first.inner_text()
+        return self.first_text(self.map.URGENT_EVENT_TYPE)
 
     def first_urgent_event_time(self) -> str:
         """
         Return the time of the first displayed urgent event.
         """
-        return self.page.locator(self.URGENT_EVENT_TIME).first.inner_text()
+        return self.first_text(self.map.URGENT_EVENT_TIME)
 
     def first_urgent_event_description(self) -> str:
         """
         Return the description of the first displayed urgent event.
         """
-        return self.page.locator(self.URGENT_EVENT_DESCRIPTION).first.inner_text()
+        return self.first_text(self.map.URGENT_EVENT_DESCRIPTION)
     
     def first_urgent_event_is_marked_red(self) -> bool:
         """
         Check if first urgent event has red styling.
         """
-        classes = self.page.locator(self.URGENT_ITEMS).first.get_attribute("class")
-        return "urgent-event-red" in classes
-    # ======================
-    # Business Actions - Events History
-    # ======================
+        classes = self.locator(self.map.URGENT_ITEMS).first.get_attribute("class")
+        return "urgent-event-red" in (classes or "")
+
+    # =========================
+    # Events History - Actions
+    # =========================
 
     def ensure_events_history_open(self):
         """
         Ensure that the events history section is open.
         If it is already visible, do nothing. Otherwise, open it.
         """
-        if not self.is_visible(self.EVENTS_SECTION):
-            self.click(self.VIEW_EVENTS_BTN)
+        if not self.is_visible(self.map.EVENTS_SECTION):
+            self.click(self.map.VIEW_EVENTS_BTN)
 
     def open_events_history(self):
         """
         Open events history section.
         """
-        self.click(self.VIEW_EVENTS_BTN)
+        self.click(self.map.VIEW_EVENTS_BTN)
+
+    # =====================================
+    # Events History - Getters / Validations
+    # =====================================
 
     def event_count(self) -> int:
         """
         Get number of events in history.
         """
-        return self.page.locator(self.EVENT_ROWS).count()
+        return self.count(self.map.EVENT_ROWS)
     
     def first_event_row_text(self) -> str:
         """
         Return full text of the first event row.
         """
-        return self.page.locator(self.EVENT_ROWS).first.inner_text()
+        return self.first_text(self.map.EVENT_ROWS)
     
     def all_event_rows_text(self) -> list[str]:
         """
         Return text of all event rows.
         """
-        return self.page.locator(self.EVENT_ROWS).all_inner_texts()
+        return self.locator(self.map.EVENT_ROWS).all_inner_texts()
+    
+    def is_events_history_visible(self) -> bool:
+        """
+        Check if events history section is visible.
+        """
+        return self.is_visible(self.map.EVENTS_SECTION)
+
+    def is_no_events_message_visible(self) -> bool:
+        """
+        Check if no events message is visible.
+        """
+        return self.is_visible(self.map.NO_EVENTS_MESSAGE)
 
     # ======================
     # User Actions
@@ -280,4 +271,14 @@ class DashboardPage(BasePage):
         """
         Logout from the application.
         """
-        self.click(self.LOGOUT)
+        self.click(self.map.LOGOUT)
+
+    # ============================
+    # User - Getters / Validations
+    # ============================
+    
+    def get_logged_in_user(self) -> str:
+        """
+        Return the displayed logged-in username.
+        """
+        return self.text(self.map.USER)

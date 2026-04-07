@@ -1,3 +1,4 @@
+from pages.maps.login_map import LoginMap
 from pages.base_page import BasePage
 
 
@@ -5,22 +6,16 @@ class LoginPage(BasePage):
     """
     Page Object representing the Login page.
 
-    This class encapsulates all locators and business actions related to
+    This class encapsulates business actions related to
     the login flow, such as entering credentials, submitting the form,
     and retrieving validation errors.
 
     The goal is to keep tests clean, readable, and independent from
     low-level UI implementation details.
     """
-
-    # ======================
-    # Locators
-    # ======================
-    TITLE = '[data-testid="login-title"]'
-    USERNAME_INPUT = '[data-testid="login-username"]'
-    PASSWORD_INPUT = '[data-testid="login-password"]'
-    SUBMIT_BUTTON = '[data-testid="login-submit"]'
-    ERROR_MESSAGE = '[data-testid="login-error"]'
+    def __init__(self, page):
+        super().__init__(page)
+        self.map = LoginMap
 
     # ======================
     # Page State
@@ -32,7 +27,7 @@ class LoginPage(BasePage):
 
         :return: True if the login title is visible, otherwise False.
         """
-        return self.is_visible(self.TITLE)
+        return self.is_visible(self.map.TITLE)
 
     # ======================
     # Business Actions
@@ -44,7 +39,7 @@ class LoginPage(BasePage):
 
         :param username: Username value to enter.
         """
-        self.fill(self.USERNAME_INPUT, username)
+        self.fill(self.map.USERNAME_INPUT, username)
 
     def enter_password(self, password: str):
         """
@@ -52,13 +47,13 @@ class LoginPage(BasePage):
 
         :param password: Password value to enter.
         """
-        self.fill(self.PASSWORD_INPUT, password)
+        self.fill(self.map.PASSWORD_INPUT, password)
 
     def click_submit(self):
         """
         Click the login submit button.
         """
-        self.click(self.SUBMIT_BUTTON)
+        self.click(self.map.SUBMIT_BUTTON)
 
     def login(self, username: str, password: str):
         """
@@ -81,7 +76,7 @@ class LoginPage(BasePage):
 
         :return: Error message text.
         """
-        return self.text(self.ERROR_MESSAGE)
+        return self.text(self.map.ERROR_MESSAGE)
 
     def is_error_displayed(self) -> bool:
         """
@@ -89,4 +84,4 @@ class LoginPage(BasePage):
 
         :return: True if the error message is visible, otherwise False.
         """
-        return self.is_visible(self.ERROR_MESSAGE)
+        return self.is_visible(self.map.ERROR_MESSAGE)

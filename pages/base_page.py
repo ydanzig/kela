@@ -51,7 +51,22 @@ class BasePage:
         :return: Element text.
         """
         return self.locator(selector).inner_text()
+    
+    def first_text(self, selector: str) -> str:
+        """
+        Get the inner text of the first element matching the selector.
 
+        :param selector: CSS selector or data-testid selector.
+        :return: Text of the first matching element.
+        """
+        return self.locator(selector).first.inner_text()
+
+    def count(self, selector: str) -> int:
+        """
+        Return the number of elements matching the selector.
+        """
+        return self.locator(selector).count()
+    
     def is_visible(self, selector: str) -> bool:
         """
         Check whether an element is visible.

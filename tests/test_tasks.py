@@ -102,14 +102,11 @@ def test_add_task_with_default_optional_values(page, username, password, task_na
 @pytest.mark.tasks
 @pytest.mark.edge
 @pytest.mark.state
-def test_add_duplicate_task_allowed(page):
+def test_add_duplicate_task_allowed(logged_in_dashboard):
     """
     Verify that adding the same task twice results in two separate tasks.
     """
-    login_page = LoginPage(page)
-    dashboard_page = DashboardPage(page)
-
-    login_page.login("yoni", "1234")
+    dashboard_page = logged_in_dashboard
 
     task_name = "Duplicate Task"
     task_time = "12:00"
@@ -137,14 +134,11 @@ def test_add_duplicate_task_allowed(page):
         "task_name_only_spaces",
     ],
 )
-def test_add_task_with_invalid_name(page, task_name):
+def test_add_task_with_invalid_name(logged_in_dashboard, task_name):
     """
     Verify that a task cannot be created with an empty or invalid name.
     """
-    login_page = LoginPage(page)
-    dashboard_page = DashboardPage(page)
-
-    login_page.login("yoni", "1234")
+    dashboard_page = logged_in_dashboard
 
     initial_count = dashboard_page.task_count()
 
@@ -194,14 +188,11 @@ def test_delete_task(page, username, password, task_name):
 ############################################################################################
 @pytest.mark.tasks
 @pytest.mark.stress
-def test_add_many_tasks(page):
+def test_add_many_tasks(logged_in_dashboard):
     """
     Verify that the system can handle adding multiple tasks (stress scenario).
     """
-    login_page = LoginPage(page)
-    dashboard_page = DashboardPage(page)
-
-    login_page.login("yoni", "1234")
+    dashboard_page = logged_in_dashboard
 
     number_of_tasks = NUM_TASKS
 

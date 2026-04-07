@@ -2,6 +2,8 @@ import os
 import pytest
 import allure
 from playwright.sync_api import sync_playwright
+from pages.dashboard_page import DashboardPage
+from pages.login_page import LoginPage
 from utils.config import BASE_URL, SCREENSHOT_DIR
 
 
@@ -59,3 +61,13 @@ def pytest_runtest_makereport(item, call):
         name=f"{test_name}_failure_screenshot",
         attachment_type=allure.attachment_type.PNG,
     )
+
+@pytest.fixture
+def logged_in_dashboard(page):
+    """
+    Fixture to log in and return the dashboard page object for tests.
+    """
+    login_page = LoginPage(page)
+    dashboard_page = DashboardPage(page)
+    login_page.login("yoni", "1234")
+    return dashboard_page
