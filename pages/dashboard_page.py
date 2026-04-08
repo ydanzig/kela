@@ -1,3 +1,4 @@
+import allure
 from pages.maps.dashboard_map import DashboardMap
 from pages.base_page import BasePage
 
@@ -32,6 +33,7 @@ class DashboardPage(BasePage):
     # Tasks - Actions
     # ======================
 
+    @allure.step("Add task: {task_name}")
     def add_task(self, name: str, time: str = "", description: str = ""):
         """
         Add a new task.
@@ -46,6 +48,7 @@ class DashboardPage(BasePage):
         self.fill(self.map.TASK_DESCRIPTION_INPUT, description)
         self.click(self.map.TASK_ADD_BTN)
 
+    @allure.step("Delete first task")
     def delete_first_task(self):
         """
         Delete the first task displayed in the task list.
@@ -122,6 +125,7 @@ class DashboardPage(BasePage):
         """
         self.click(self.map.URGENT_ADD_BTN)
 
+    @allure.step("Add urgent event: {event_type}")
     def add_urgent_event(
         self,
         event_type: str = "",
@@ -148,6 +152,7 @@ class DashboardPage(BasePage):
         self.set_urgent_toggle(urgent)
         self.click_add_urgent_event()
 
+    @allure.step("Delete first urgent event")
     def delete_first_urgent_event(self):
         """
         Delete the first urgent event.
@@ -223,6 +228,7 @@ class DashboardPage(BasePage):
         if not self.is_visible(self.map.EVENTS_SECTION):
             self.click(self.map.VIEW_EVENTS_BTN)
 
+    @allure.step("Open events history")
     def open_events_history(self):
         """
         Open events history section.
@@ -266,7 +272,8 @@ class DashboardPage(BasePage):
     # ======================
     # User Actions
     # ======================
-
+    
+    @allure.step("Logout user")
     def logout(self):
         """
         Logout from the application.

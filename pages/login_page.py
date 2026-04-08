@@ -1,3 +1,4 @@
+import allure
 from pages.maps.login_map import LoginMap
 from pages.base_page import BasePage
 
@@ -55,6 +56,7 @@ class LoginPage(BasePage):
         """
         self.click(self.map.SUBMIT_BUTTON)
 
+    @allure.step("Login as {username}")
     def login(self, username: str, password: str):
         """
         Perform a complete login action.
