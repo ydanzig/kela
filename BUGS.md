@@ -68,17 +68,17 @@ High – data privacy issue
 Tasks can be submitted with a name containing only spaces, without any validation error.
 
 **Steps to Reproduce:**
-1. Try to create a task with only spaces ("   ")
+1. Try to create a task with only spaces in Task Name ("   ")
 2. Click Add
 
 **Expected Result:**  
-Validation error should appear
+Validation error "Please fill out this field" should appear
 
 **Actual Result:**  
 No error message is displayed
 
 **Impact:**  
-Medium – invalid data allowed
+Low – UI issue.
 
 ---
 
