@@ -8,17 +8,25 @@ from utils.config import BASE_URL, SCREENSHOT_DIR
 
 
 def pytest_addoption(parser):
+    """Add command-line options to pytest.
+    --headed: Run tests with a visible browser window (not headless)."""
     parser.addoption("--headed", action="store_true", default=False)
 
 
 @pytest.fixture(scope="session")
 def playwright_instance():
+    """Initialize Playwright and yield the instance for the test session.
+    This fixture sets up Playwright for the entire test session and ensures proper cleanup after all tests have run."""
     with sync_playwright() as p:
         yield p
 
 
 @pytest.fixture
 def page(playwright_instance, pytestconfig, request):
+    """Create a new browser page for each test.
+    This fixture launches a new browser instance for each test,
+    navigates to the base URL, and ensures that the browser is properly closed after the test completes.
+    It also respects the --headed option for running tests with a visible browser window."""
     browser = playwright_instance.chromium.launch(
         headless=not pytestconfig.getoption("--headed"),
         slow_mo=1000 if pytestconfig.getoption("--headed") else 0,
@@ -65,7 +73,9 @@ def pytest_runtest_makereport(item, call):
 @pytest.fixture
 def logged_in_dashboard(page):
     """
-    Fixture to log in and return the dashboard page object for tests.
+    Log in with a default user and return the dashboard page object.
+
+    Used to avoid repeating login steps in tests that require an authenticated session.
     """
     login_page = LoginPage(page)
     dashboard_page = DashboardPage(page)
