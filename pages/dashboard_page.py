@@ -33,7 +33,7 @@ class DashboardPage(BasePage):
     # Tasks - Actions
     # ======================
 
-    @allure.step("Add task: {task_name}")
+    @allure.step("Add task: {name}")
     def add_task(self, name: str, time: str = "", description: str = ""):
         """
         Add a new task.
