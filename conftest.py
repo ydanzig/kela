@@ -74,7 +74,6 @@ def pytest_runtest_makereport(item, call):
 def logged_in_dashboard(page):
     """
     Log in with a default user and return the dashboard page object.
-
     Used to avoid repeating login steps in tests that require an authenticated session.
     """
     login_page = LoginPage(page)
