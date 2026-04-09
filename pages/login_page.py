@@ -22,14 +22,6 @@ class LoginPage(BasePage):
     # Page State
     # ======================
 
-    # def is_loaded(self) -> bool:
-    #     """
-    #     Verify that the login page is loaded.
-
-    #     :return: True if the login title is visible, otherwise False.
-    #     """
-    #     return self.is_visible(self.map.TITLE)
-
     def is_loaded(self) -> bool:
         """
         Verify that the login page is loaded.

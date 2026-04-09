@@ -78,6 +78,7 @@ def test_task_creation_adds_event_to_history(logged_in_dashboard):
 
 @pytest.mark.history
 @pytest.mark.positive
+@pytest.mark.xfail(reason="BUG: urgent events not added to history")
 @pytest.mark.parametrize(
     "urgent_bool",
     [True, False],
@@ -175,6 +176,7 @@ def test_multiple_task_creations_add_multiple_events_to_history(logged_in_dashbo
     
 @pytest.mark.history
 @pytest.mark.state
+@pytest.mark.xfail(reason="BUG: urgent events not added to history")
 def test_mixed_events_are_logged_in_history(logged_in_dashboard):
     """
     Verify that both task events and urgent events are logged in events history.

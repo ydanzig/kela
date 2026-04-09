@@ -22,12 +22,6 @@ class DashboardPage(BasePage):
     # ======================
     # Page State
     # ======================
-
-    # def is_loaded(self) -> bool:
-    #     """
-    #     Verify that the dashboard page is loaded.
-    #     """
-    #     return self.is_visible(self.map.TITLE)
     
     def is_loaded(self) -> bool:
         """
