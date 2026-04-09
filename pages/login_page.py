@@ -22,13 +22,25 @@ class LoginPage(BasePage):
     # Page State
     # ======================
 
+    # def is_loaded(self) -> bool:
+    #     """
+    #     Verify that the login page is loaded.
+
+    #     :return: True if the login title is visible, otherwise False.
+    #     """
+    #     return self.is_visible(self.map.TITLE)
+
     def is_loaded(self) -> bool:
         """
         Verify that the login page is loaded.
-
-        :return: True if the login title is visible, otherwise False.
         """
-        return self.is_visible(self.map.TITLE)
+        try:
+            self.locator(self.map.USERNAME_INPUT).wait_for(state="visible", timeout=5000)
+            self.locator(self.map.PASSWORD_INPUT).wait_for(state="visible", timeout=5000)
+            self.locator(self.map.SUBMIT_BUTTON).wait_for(state="visible", timeout=5000)
+            return True
+        except Exception:
+            return False
 
     # ======================
     # Business Actions
