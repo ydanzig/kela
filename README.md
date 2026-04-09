@@ -1,4 +1,7 @@
 # 🧪 Task Board Automation Project
+End-to-end UI automation framework with CI/CD integration, Allure reporting, and scalable test architecture.
+
+![CI](https://github.com/ydanzig/kela/actions/workflows/ui-tests.yml/badge.svg)
 
 UI automation framework built with **Python, Pytest, and Playwright**.  
 Covers core flows: **login, tasks, urgent events, and event history**.
@@ -12,20 +15,18 @@ The framework is implemented using the **Page Object Model (POM)** pattern.
 ### 📁 Project Structure
 
 ```
+
 project-root/
 │
 ├── pages/
-│   ├── __init__.py
 │   ├── base_page.py
 │   ├── login_page.py
 │   ├── dashboard_page.py
 │   └── maps/
-│       ├── __init__.py
 │       ├── login_map.py
 │       └── dashboard_map.py
 │
 ├── tests/
-│   ├── __init__.py
 │   ├── expected.py
 │   ├── test_login.py
 │   ├── test_tasks.py
@@ -33,8 +34,11 @@ project-root/
 │   └── test_event_history.py
 │
 ├── utils/
-|   ├── __init__.py
 │   └── config.py
+│
+├── .github/                # CI/CD configuration
+│   └── workflows/
+│       └── ui-tests.yml    # GitHub Actions workflow
 │
 ├── conftest.py
 ├── pytest.ini
@@ -46,7 +50,7 @@ project-root/
 ### 🧠 Design Explanation
 
 - **pages/**  
-  Contains UI interaction logic only (clicks, inputs, reads)
+    Encapsulates UI interaction logic and business actions, abstracting low-level Playwright operations
 
 - **tests/**  
   Contains business scenarios and assertions  
@@ -172,6 +176,48 @@ allure serve allure-results
 
 ---
 
+## 🔄 CI/CD
+
+The project includes a **GitHub Actions workflow** for automated UI test execution.
+
+The pipeline is triggered on:
+- Push to main / master / feature branches
+- Pull requests
+- Manual execution via "Run workflow"
+
+### 🔧 Workflow Capabilities
+
+- Installs application dependencies (`npm install`)
+- Starts the application in the background (`npm run dev`)
+- Waits for the application to be ready before test execution
+- Sets up Python environment and installs test dependencies
+- Installs Playwright browser (Chromium)
+- Runs the full Pytest suite
+- Generates Allure test results
+- Uploads test artifacts:
+  - `allure-results`
+  - application logs (`app.log`)
+
+Workflow file:
+.github/workflows/ui-tests.yml
+
+---
+### 📊 Viewing Test Results
+
+Allure results are uploaded as CI artifacts.
+
+To view locally:
+1. Download the `allure-results` artifact from the GitHub Actions run
+2. Extract it
+3. Run:
+
+```bash
+allure serve allure-results
+```
+This will open the Allure report in your browser.
+Requires Allure CLI installed locally.
+---
+
 ## ✅ Test Coverage
 
 The framework provides end-to-end coverage of core user flows, including functional validation, UI behavior, and state management.
@@ -276,6 +322,8 @@ Some scenarios are intentionally tested but currently fail due to product bugs:
 - Urgent events not appearing in event history  
 - Incorrect styling logic for urgent events  
 - Missing validation for whitespace-only task names  
+
+Known issues are marked using `xfail` to maintain CI stability while preserving defect visibility.
 
 ---
 
