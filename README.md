@@ -172,15 +172,113 @@ allure serve allure-results
 
 ---
 
-## ✅ Coverage
+## ✅ Test Coverage
 
-- **Login** – success, validation, logout  
-- **Tasks** – create, delete, duplicates, stress, negative  
-- **Urgent Events** – create, validation, delete  
-- **Event History** – logging, order, persistence  
+The framework provides end-to-end coverage of core user flows, including functional validation, UI behavior, and state management.
+
+---
+
+### 🔐 Login
+
+**Scenarios covered:**
+- Successful login with multiple valid credential combinations (case sensitivity, formats)
+- Validation errors (empty username/password, short password, whitespace inputs)
+- Error message validation (exact match)
+- Session transition: login → dashboard
+- Logout flow
+
+**Relevant tests:**
+- `test_login_success`
+- `test_login_validation_errors`
+- `test_logout_success`  
+(see `tests/test_login.py`)
+
+---
+
+### 📋 Tasks
+
+**Scenarios covered:**
+- Task creation (full data / required fields only)
+- Default values validation (time, description)
+- Duplicate task behavior (allowed)
+- Task deletion
+- Invalid input validation (empty / whitespace)
+- Stress scenario (multiple tasks)
+
+**Relevant tests:**
+- `test_add_task_success`
+- `test_add_task_with_default_optional_values`
+- `test_add_duplicate_task_allowed`
+- `test_add_task_with_invalid_name`
+- `test_add_many_tasks`  
+(see `tests/test_tasks.py`)
+
+---
+
+### 🚨 Urgent Events
+
+**Scenarios covered:**
+- Creation of urgent events (all types)
+- Parametrized validation across event types and urgent flag
+- Required field validation (event type)
+- UI validation (type, time, description)
+- Styling validation (urgent vs non-urgent)
+- Deletion flows (single and multiple events)
+
+**Relevant tests:**
+- `test_add_attack_urgent_event_success`
+- `test_add_urgent_event_displays_values_for_each_type`
+- `test_add_urgent_event_without_type`
+- `test_delete_urgent_event`
+- `test_delete_all_urgent_events_one_by_one`  
+(see `tests/test_urgent_events.py`)
+
+---
+
+### 📜 Event History
+
+**Scenarios covered:**
+- Opening history panel
+- Empty state validation
+- Logging of task and urgent events
+- Order validation (latest first)
+- Mixed events scenarios
+- Persistence after deletion
+
+**Relevant tests:**
+- `test_open_events_history_success`
+- `test_events_history_empty_state`
+- `test_task_creation_adds_event_to_history`
+- `test_urgent_event_creation_adds_event_to_history`
+- `test_events_history_order_latest_first`
+- `test_mixed_events_are_logged_in_history`  
+(see `tests/test_event_history.py`)
+
+---
+
+### 🧪 Test Types & Methodology
+
+The framework applies multiple testing strategies:
+
+- Positive tests – valid user flows  
+- Negative tests – invalid inputs and validation handling  
+- State tests – system behavior after sequential actions  
+- Edge cases – boundary inputs (empty, whitespace, duplicates)  
+- Stress tests – handling multiple entities  
+- Parametrized tests – broad coverage with minimal duplication  
+
+---
+
+### ⚠️ Known Gaps (Covered by Tests)
+
+Some scenarios are intentionally tested but currently fail due to product bugs:
+
+- Urgent events not appearing in event history  
+- Incorrect styling logic for urgent events  
+- Missing validation for whitespace-only task names  
 
 ---
 
 ## 🐞 Bugs
 
-See `BUGS.md`
+See `BUGS.md` for full details
