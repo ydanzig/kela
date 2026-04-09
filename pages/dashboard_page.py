@@ -23,11 +23,23 @@ class DashboardPage(BasePage):
     # Page State
     # ======================
 
+    # def is_loaded(self) -> bool:
+    #     """
+    #     Verify that the dashboard page is loaded.
+    #     """
+    #     return self.is_visible(self.map.TITLE)
+    
     def is_loaded(self) -> bool:
         """
         Verify that the dashboard page is loaded.
         """
-        return self.is_visible(self.map.TITLE)
+        try:
+            self.locator(self.map.ADD_TASK_BTN).wait_for(state="visible", timeout=5000)
+            self.locator(self.map.ADD_URGENT_BTN).wait_for(state="visible", timeout=5000)
+            self.locator(self.map.VIEW_EVENTS_BTN).wait_for(state="visible", timeout=5000)
+            return True
+        except Exception:
+            return False
 
     # ======================
     # Tasks - Actions
