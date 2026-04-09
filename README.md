@@ -18,31 +18,31 @@ The framework is implemented using the **Page Object Model (POM)** pattern.
 
 project-root/
 │
-├── pages/
-│   ├── base_page.py
-│   ├── login_page.py
-│   ├── dashboard_page.py
-│   └── maps/
+├── pages/                 # Page Object Model (UI abstraction)
+│   ├── base_page.py       # Common reusable UI actions
+│   ├── login_page.py      # Login page logic
+│   ├── dashboard_page.py  # Dashboard actions
+│   └── maps/              # UI locators (selectors)
 │       ├── login_map.py
 │       └── dashboard_map.py
 │
-├── tests/
-│   ├── expected.py
+├── tests/                 # Test scenarios grouped by feature
+│   ├── expected.py        # Expected values for validation
 │   ├── test_login.py
 │   ├── test_tasks.py
 │   ├── test_urgent_events.py
 │   └── test_event_history.py
 │
-├── utils/
+├── utils/                 # Shared configuration and helpers
 │   └── config.py
 │
-├── .github/                # CI/CD configuration
+├── .github/               # CI/CD configuration
 │   └── workflows/
-│       └── ui-tests.yml    # GitHub Actions workflow
+│       └── ui-tests.yml   # GitHub Actions workflow
 │
-├── conftest.py
-├── pytest.ini
-├── requirements.txt
+├── conftest.py            # Pytest fixtures and setup
+├── pytest.ini             # Pytest configuration
+├── requirements.txt       # Python dependencies
 ├── README.md
 └── BUGS.md
 ```
