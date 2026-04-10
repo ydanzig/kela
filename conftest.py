@@ -12,7 +12,6 @@ def pytest_addoption(parser):
     --headed: Run tests with a visible browser window (not headless)."""
     parser.addoption("--headed", action="store_true", default=False)
 
-
 @pytest.fixture(scope="session")
 def playwright_instance():
     """Initialize Playwright and yield the instance for the test session.
@@ -21,16 +20,23 @@ def playwright_instance():
         yield p
 
 
-@pytest.fixture
-def page(playwright_instance, pytestconfig, request):
-    """Create a new browser page for each test.
-    This fixture launches a new browser instance for each test,
-    navigates to the base URL, and ensures that the browser is properly closed after the test completes.
-    It also respects the --headed option for running tests with a visible browser window."""
+@pytest.fixture(scope="session")
+def browser(playwright_instance, pytestconfig):
+    """
+    Launch a single browser instance for the entire test session.
+    """
     browser = playwright_instance.chromium.launch(
         headless=not pytestconfig.getoption("--headed"),
         slow_mo=1000 if pytestconfig.getoption("--headed") else 0,
     )
+    yield browser
+    browser.close()
+
+@pytest.fixture
+def page(browser):
+    """
+    Create a fresh isolated browser context and page for each test.
+    """
     context = browser.new_context()
     page = context.new_page()
     page.goto(BASE_URL)
@@ -38,8 +44,6 @@ def page(playwright_instance, pytestconfig, request):
     yield page
 
     context.close()
-    browser.close()
-
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
