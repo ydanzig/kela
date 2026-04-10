@@ -214,8 +214,11 @@ To view locally:
 ```bash
 allure serve allure-results
 ```
+
 This will open the Allure report in your browser.
-Requires Allure CLI installed locally.
+
+**Note:** Requires Allure CLI installed locally.
+
 ---
 
 ## ✅ Test Coverage
@@ -256,7 +259,8 @@ The framework provides end-to-end coverage of core user flows, including functio
 - `test_add_task_with_default_optional_values`
 - `test_add_duplicate_task_allowed`
 - `test_add_task_with_invalid_name`
-- `test_add_many_tasks`  
+- `test_add_many_tasks`
+- `test_delete_task`  
 (see `tests/test_tasks.py`)
 
 ---
@@ -276,7 +280,8 @@ The framework provides end-to-end coverage of core user flows, including functio
 - `test_add_urgent_event_displays_values_for_each_type`
 - `test_add_urgent_event_without_type`
 - `test_delete_urgent_event`
-- `test_delete_all_urgent_events_one_by_one`  
+- `test_delete_all_urgent_events_one_by_one`
+- `test_delete_one_of_multiple_urgent_events`  
 (see `tests/test_urgent_events.py`)
 
 ---
@@ -297,7 +302,10 @@ The framework provides end-to-end coverage of core user flows, including functio
 - `test_task_creation_adds_event_to_history`
 - `test_urgent_event_creation_adds_event_to_history`
 - `test_events_history_order_latest_first`
-- `test_mixed_events_are_logged_in_history`  
+- `test_mixed_events_are_logged_in_history`
+- `test_task_deletion_does_not_remove_event_from_history`
+- `test_multiple_task_creations_add_multiple_events_to_history`
+- `test_urgent_event_order_latest_first` (skipped - known bug)  
 (see `tests/test_event_history.py`)
 
 ---
